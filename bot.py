@@ -7,12 +7,13 @@ from typing import List
 
 import irc.bot
 import irc.strings
+from bs4 import BeautifulSoup as bs4
 from irc.client import NickMask
 from lib.cog import CogManager
 from lib.command import Command
 from lib.objects import Channel, Message, User
+from lib.web import get
 
-# urlexpression = "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -24,6 +25,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
         self.cm = CogManager()
 
     def run(self):
+        # TODO pull default modules from config
         enabled_modules = ['example', 'imdb', 'chuck']
         self.cm.load_all(enabled_modules, bot=self)
         self.start()
@@ -59,12 +61,32 @@ class Vicky(irc.bot.SingleServerIRCBot):
         print(event)
 
     def on_pubmsg(self, c, event):
+        # TODO pull prefixes from config
         prefix = ";"
         msg = Message(
             message=event.arguments[0],
             user=self.channel.getuser(event.source.nick)
         )
-        if msg.message.startswith(prefix):
+        # TEMP stick in a module after events are wired
+        if "http" in msg.message:
+            try:
+                urlexpression = "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+                possible = re.findall(urlexpression, msg.message)
+                req = get(possible[0])
+                if req.status == 200:
+                    soup = bs4(req.data, "html.parser")
+                    if soup is not None:
+                        try:
+                            title = soup.title.string
+                        except AttributeError as error:
+                            pass
+                        else:
+                            self.sendmsg(title.strip())
+            except:
+                pass
+
+
+        elif msg.message.startswith(prefix):
             command = Command(prefix=prefix, data=msg)
             # TODO move these
             if command.name == "reload" or command.name == "load":
@@ -79,7 +101,11 @@ class Vicky(irc.bot.SingleServerIRCBot):
                 else:
                     self.sendmsg(f"Could not unload {command.message}")
             elif command.name == "loaded":
-                self.sendmsg(f"modules: {self.cm.modules}, cogs:{self.cm.cogs}")
+                available = ", ".join(list(self.cm.modules.keys()))
+                loaded = ", ".join(list(self.cm.cogs.keys()))
+
+                self.sendmsg(f"Loaded: {loaded}")
+                self.sendmsg(f"Available: {available}")
             else:
                 self.cm.do_command(command)
         return
@@ -101,7 +127,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
 
 def main():
     # bot = Vicky('#main', 'vicky', 'localhost', 6667)
-    bot = Vicky('#main', 'vicky', 'irc.0xfdb.xyz', 6667)
+    bot = Vicky('#bot', 'vicky', 'irc.0xfdb.xyz', 6667)
     bot.run()
 
 
