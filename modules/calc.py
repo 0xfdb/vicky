@@ -2,7 +2,7 @@ from lib.cog import Cog
 from lib.command import Command, command
 
 
-class Calculator(Cog):
+class Calc(Cog):
     @command(aliases=["calc"], description="")
     def do_calculation(self, c: Command):
         # c holds the needed shit
