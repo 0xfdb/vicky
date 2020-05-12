@@ -4,25 +4,35 @@ from typing import Any, Optional
 import requests
 import ujson
 
+from lib.utils import tojson
+
 
 @dataclass
 class Request:
     status: int
+    "http status code"
     data: Any
+    "whatever was returned from the request, including None"
 
 
 class Web:
+    """
+    Smol wrapper for requests.Session()
+    """
     # TODO proxy support
     def __init__(self, headers: Optional[dict] = None, timeout: Optional[int] = None):
         self.session: object = requests.Session()
         if headers:
             self.session.headers.update(headers)
-        # TODO actually use this
         self.timeout: int = timeout
 
 
 
 def get(url: str, session: Optional[Web] = None, json: bool = False) -> Request:
+    """
+    HTTP GET with requests
+    returns Request object
+    """
     if session is not None:
         req = session.session.get(url=url, timeout=session.timeout)
     else:
@@ -38,6 +48,10 @@ def get(url: str, session: Optional[Web] = None, json: bool = False) -> Request:
 
 
 def post(url: str, data: dict, session: Optional[Web] = None) -> Request:
+    """
+    HTTP POST with requests
+    returns Request object
+    """
     if session is not None:
         session.session.post(url=url, data=data, timeout=session.timeout)
     else:
