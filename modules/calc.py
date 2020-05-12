@@ -23,7 +23,7 @@ class Calc(Cog):
         elif message_parts[0] == "-" and len(message_parts) == 3:
             tosub1 = int(message_parts[1])
             tosub2 = int(message_parts[2])
-            subbed = tosub1 + tosub2
+            subbed = tosub1 - tosub2
             self.sendmsg("Your total is: {}".format(subbed))
         else:
             self.sendmsg("I only weached de furst gwade :(")
