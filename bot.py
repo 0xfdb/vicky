@@ -41,7 +41,6 @@ class Vicky(irc.bot.SingleServerIRCBot):
     def on_join(self, c, event):
         print(event)
         # self.connection.privmsg(self.channel, "I have joined!")
-        self.sendmsg("")
 
     def on_namreply(self, c, event):
         self.gen_userlist()
