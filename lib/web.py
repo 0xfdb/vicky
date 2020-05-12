@@ -4,8 +4,6 @@ from typing import Any, Optional
 import requests
 import ujson
 
-from lib.utils import tojson
-
 
 @dataclass
 class Request:
