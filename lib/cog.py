@@ -114,13 +114,17 @@ class CogManager:
         found = False
         for cog in self.cogs.values():
             for meth in cog.commands:
-                if command.name in meth.__command_name__:
-                    if meth.__restricted__:
-                        if command.sender.role >= meth.__role__:
+                # HACK super gross
+                try:
+                    if command.name in meth.__command_name__:
+                        if meth.__restricted__:
+                            if command.sender.role >= meth.__role__:
+                                meth(command)
+                        else:
                             meth(command)
-                    else:
-                        meth(command)
-                    return True
+                        return True
+                except:
+                    return False
 
         if not found:
             return False
