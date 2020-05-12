@@ -24,7 +24,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
         self.cm = CogManager()
 
     def run(self):
-        enabled_modules = ['example']
+        enabled_modules = ['example', 'imdb', 'chuck']
         self.cm.load_all(enabled_modules, bot=self)
         self.start()
 
