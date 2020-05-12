@@ -26,7 +26,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
 
     def run(self):
         # TODO pull default modules from config
-        enabled_modules = ['example', 'imdb', 'chuck']
+        enabled_modules = ['example', 'imdb', 'chuck', 'calc', 'zerox']
         self.cm.load_all(enabled_modules, bot=self)
         self.start()
 
