@@ -29,8 +29,10 @@ class Channel:
                 return user
 
     def remove(self, nick):
-        user = self.getuser(nick)
-        del self.users[user]
+        # HACK
+        pass
+        # user = self.getuser(nick)
+        # del self.users[user]
 
     def setnick(self, nick, newnick):
         user = self.getuser(nick)
