@@ -26,7 +26,7 @@ def pastebin(pastedata: str) -> Any:
         return None
 
 
-def dpaste(pastedata: str, expiry_days: Optional[int] = 10, language: Optional[str] = None) -> Any:
+def dpaste(pastedata: str, expiry_days: Optional[int] = 10, language: Optional[str] = "text") -> Any:
     valid_languages = [
         "coffee-script", "text", "tcl", "genshi", "csharp", "go",
         "trac-wiki", "lasso", "xml", "console", "fortran", "matlab", "ada", "erlang",
@@ -44,9 +44,6 @@ def dpaste(pastedata: str, expiry_days: Optional[int] = 10, language: Optional[s
     ]
     if language is not None and language in valid_languages:
         syntax = language
-    else:
-        syntax = "text"
-
     # TODO add dpaste_poster to configuration when available
     data = {
         "syntax": syntax,
