@@ -21,7 +21,7 @@ def pastebin(pastedata: str) -> Any:
     }
     req = post(url="http://pastebin.com/api/api_post.php", data=params)
     if req.status == 200:
-        return req.text
+        return req.data
     else:
         return None
 
