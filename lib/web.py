@@ -37,9 +37,7 @@ def get(url: str, session: Optional[Web] = None, json: bool = False) -> Request:
        req = requests.get(url=url)
 
     status = req.status_code
-    if status != 200:
-        return Request(status, None)
-    elif json:
+    if json:
         return Request(status, todict(req.text))
     else:
         return Request(status, req.text)
@@ -54,11 +52,7 @@ def post(url: str, data: dict, session: Optional[Web] = None) -> Request:
         session.session.post(url=url, data=data, timeout=session.timeout)
     else:
         req = requests.post(url=url, data=data)
-    status = req.status_code
-    if status:
-        return Request(status, None)
-    else:
-        return Request(status, req.text)
+    return Request(req.status_code, req.text)
 
 
 # maybe move this to utils or something
