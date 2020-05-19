@@ -44,6 +44,8 @@ def dpaste(pastedata: str, expiry_days: Optional[int] = 10, syntax: Optional[str
     ]
     if syntax in valid_languages:
         syntax = language
+    else:
+        syntax = "text"
     # TODO add dpaste_poster to configuration when available
     data = {
         "syntax": syntax,
