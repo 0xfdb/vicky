@@ -73,6 +73,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
                 urlexpression = "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
                 possible = re.findall(urlexpression, msg.message)
                 req = get(possible[0])
+                domain = re.findall("https?:\/\/(.+?)\/", possible[0])
                 if req.status == 200:
                     soup = bs4(req.data, "html.parser")
                     if soup is not None:
@@ -81,7 +82,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
                         except AttributeError as error:
                             pass
                         else:
-                            self.sendmsg(title.strip())
+                            self.sendmsg("[ {} ] - {}".format(title.strip(), domain[0]))
             except:
                 pass
 
