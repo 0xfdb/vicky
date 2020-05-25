@@ -5,9 +5,10 @@ import re
 from dataclasses import dataclass
 from typing import List
 
+from bs4 import BeautifulSoup as bs4
+
 import irc.bot
 import irc.strings
-from bs4 import BeautifulSoup as bs4
 from irc.client import NickMask
 from lib.cog import CogManager
 from lib.command import Command
@@ -72,8 +73,8 @@ class Vicky(irc.bot.SingleServerIRCBot):
             try:
                 urlexpression = "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
                 possible = re.findall(urlexpression, msg.message)
-                req = get(possible[0])
-                domain = re.findall("https?:\/\/(.+?)\/", possible[0])
+                req = get(possible[0], allow_redirects=True, timeout=15)
+                domain = re.findall("https?:\/\/(.+?)\/", req.url)
                 if req.status == 200:
                     soup = bs4(req.data, "html.parser")
                     if soup is not None:
@@ -85,7 +86,6 @@ class Vicky(irc.bot.SingleServerIRCBot):
                             self.sendmsg("[ {} ] - {}".format(title.strip(), domain[0]))
             except:
                 pass
-
 
         elif msg.message.startswith(prefix):
             command = Command(prefix=prefix, data=msg)

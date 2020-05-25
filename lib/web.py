@@ -5,10 +5,13 @@ import requests
 import ujson
 
 
+# TODO consider better handling of this
 @dataclass
 class Request:
     status: int
     "http status code"
+    url: str
+    "url"
     data: Any
     "whatever was returned from the request, including None"
 
@@ -26,7 +29,7 @@ class Web:
 
 
 
-def get(url: str, session: Optional[Web] = None, json: bool = False) -> Request:
+def get(url: str, session: Optional[Web] = None, json: bool = False, **kwargs: Optional[dict]) -> Request:
     """
     HTTP GET with requests
     returns Request object
@@ -34,13 +37,13 @@ def get(url: str, session: Optional[Web] = None, json: bool = False) -> Request:
     if session is not None:
         req = session.session.get(url=url, timeout=session.timeout)
     else:
-       req = requests.get(url=url)
+       req = requests.get(url=url, **kwargs)
 
     status = req.status_code
     if json:
-        return Request(status, todict(req.text))
+        return Request(status, req.url, todict(req.text))
     else:
-        return Request(status, req.text)
+        return Request(status, req.url, req.text)
 
 
 def post(url: str, data: dict, session: Optional[Web] = None) -> Request:
