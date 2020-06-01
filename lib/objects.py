@@ -1,6 +1,6 @@
 import time
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, NoReturn
 
 
 @dataclass
@@ -23,17 +23,22 @@ class Channel:
     users: List[User]
     name: str
 
-    def getuser(self, nick):
+    def getuser(self, nick) -> User:
         for user in self.users:
             if user.nick == nick:
                 return user
 
-    def remove(self, nick):
-        # HACK
-        pass
-        # user = self.getuser(nick)
-        # del self.users[user]
+    def adduser(self, user: User) -> NoReturn:
+        self.users.append(user)
 
-    def setnick(self, nick, newnick):
+    def remove(self, nick) -> NoReturn:
         user = self.getuser(nick)
+        # mehhhhh
+        for i, _ in enumerate(self.users):
+            if user == _:
+                del self.users[i]
+
+    def setnick(self, nick, newnick) -> NoReturn:
+        user = self.getuser(nick)
+        print(user)
         user.nick = newnick

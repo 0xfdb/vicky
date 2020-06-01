@@ -3,7 +3,7 @@
 import logging
 import re
 from dataclasses import dataclass
-from typing import List
+from typing import List, NoReturn
 
 from bs4 import BeautifulSoup as bs4
 
@@ -41,12 +41,25 @@ class Vicky(irc.bot.SingleServerIRCBot):
     def on_welcome(self, client, event):
         client.join(self.channel.name)
 
-    def on_join(self, c, event):
-        print(event)
-        # self.connection.privmsg(self.channel, "I have joined!")
+    def on_join(self, client, event):
+        nick = event.source.split("!")[0]
+        current_channel = self.channels[event.target]
+        newuser = User(
+            nick=nick,
+            isop=current_channel.is_oper(nick),
+            isowner=current_channel.is_owner(nick),
+            isvoiced=current_channel.is_voiced(nick)
+        )
+        self.channel.adduser(newuser)
+        print(client.__dict__)
+        if event.source.split("!")[0] == client.nickname:
+            self.sendmsg("Vicky Vicky Vicky, can't you see. Sometimes your joins just hypnotize me.")
+        else:
+            return
 
     def on_namreply(self, c, event):
-        self.gen_userlist()
+        # channel
+        self.gen_userlist(event.arguments[1])
 
     def on_nick(self, c, event):
         self.channel.setnick(event.source.nick, event.target)
@@ -111,11 +124,11 @@ class Vicky(irc.bot.SingleServerIRCBot):
                 self.cm.do_command(command)
         return
 
-    def gen_userlist(self):
+    def gen_userlist(self, chan: str) -> NoReturn:
         # maybe better management of users
         # probably shouldnt be here
         # TODO NickMask() and hold more user info
-        channel = self.channels[self.channel.name]
+        channel = self.channels[chan]
         for user in channel.users():
             newuser = User(
                 nick=user,
@@ -123,12 +136,12 @@ class Vicky(irc.bot.SingleServerIRCBot):
                 isowner=channel.is_owner(user),
                 isvoiced=channel.is_voiced(user)
             )
-            self.channel.users.append(newuser)
+            self.channel.adduser(newuser)
 
 
 def main():
-    # bot = Vicky('#main', 'vicky', 'localhost', 6667)
-    bot = Vicky('#bot', 'vicky', 'irc.0xfdb.xyz', 6667)
+    bot = Vicky('#main', 'vicky', 'localhost', 6667)
+    # bot = Vicky('#bot', 'vicky', 'irc.0xfdb.xyz', 6667)
     bot.run()
 
 
