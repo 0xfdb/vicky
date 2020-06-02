@@ -51,12 +51,6 @@ class Vicky(irc.bot.SingleServerIRCBot):
             isvoiced=current_channel.is_voiced(nick),
         )
         self.channel.adduser(newuser)
-        if event.source.split("!")[0] == client.nickname:
-            self.sendmsg(
-                "Vicky Vicky Vicky, can't you see. Sometimes your joins just hypnotize me."
-            )
-        else:
-            return
 
     def on_namreply(self, c, event):
         # channel
