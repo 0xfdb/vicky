@@ -7,7 +7,7 @@ from typing import List, NoReturn
 
 import irc.bot
 import irc.strings
-from irc.client import NickMask
+
 from lib.cog import CogManager
 from lib.command import Command
 from lib.objects import Channel, Message, User
@@ -51,7 +51,6 @@ class Vicky(irc.bot.SingleServerIRCBot):
             isvoiced=current_channel.is_voiced(nick),
         )
         self.channel.adduser(newuser)
-        print(client.__dict__)
         if event.source.split("!")[0] == client.nickname:
             self.sendmsg(
                 "Vicky Vicky Vicky, can't you see. Sometimes your joins just hypnotize me."
@@ -67,7 +66,6 @@ class Vicky(irc.bot.SingleServerIRCBot):
     def on_nick(self, c, event):
         self.cm.do_event(event)
         self.channel.setnick(event.source.nick, event.target)
-        print(self.channel)
 
     def on_part(self, c, event):
         self.cm.do_event(event)
@@ -79,7 +77,6 @@ class Vicky(irc.bot.SingleServerIRCBot):
 
     def on_privmsg(self, c, event):
         self.cm.do_event(event)
-        print(event)
 
     def on_pubmsg(self, c, event):
         # TODO pull prefixes from config
