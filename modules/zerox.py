@@ -32,4 +32,4 @@ class ZeroX(Cog):
         req = get("https://taro.0xfdb.xyz/radio.html")
         soup = bs4(req.data, 'html.parser')
         title = soup.find(id="NowPlaying").get_text().strip()
-        self.sendmsg(title)
+        self.sendmsg("📻 " + title)
