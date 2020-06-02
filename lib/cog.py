@@ -98,17 +98,15 @@ class CogManager:
         if module in self.cogs.keys:
             return self.modules.get(module.lower())
 
-    def do_event(self, data: list):
+    def do_event(self, event):
         for cog in self.cogs.values():
             for meth in cog.events:
-                if meth.__event__ == data[0]:
-                    routes = {
-                    }
-                    if choice := routes.get(data[0], False):
-                        if type(data[1]) is dict:
-                            meth(choice(**data[1]))
-                        elif type(data[1]) is list:
-                            meth(choice(data[1]))
+                if meth.__event__ == event.type:
+                    meth(event)
+                    # routes = {
+                    # }
+                    # if choice := routes.get(event.type, False):
+                    #         meth(choice(event))
 
     def do_command(self, command: Command) -> bool:
         found = False

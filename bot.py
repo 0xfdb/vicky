@@ -5,8 +5,6 @@ import re
 from dataclasses import dataclass
 from typing import List, NoReturn
 
-from bs4 import BeautifulSoup as bs4
-
 import irc.bot
 import irc.strings
 from irc.client import NickMask
@@ -25,6 +23,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
         self.channel = Channel(users=[], name=channel)
         self.cm = CogManager()
 
+
     def run(self):
         # TODO pull default modules from config
         enabled_modules = ['example', 'imdb', 'chuck', 'calc', 'zerox']
@@ -42,6 +41,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
         client.join(self.channel.name)
 
     def on_join(self, client, event):
+        self.cm.do_event(event)
         nick = event.source.split("!")[0]
         current_channel = self.channels[event.target]
         newuser = User(
@@ -59,19 +59,24 @@ class Vicky(irc.bot.SingleServerIRCBot):
 
     def on_namreply(self, c, event):
         # channel
+        self.cm.do_event(event)
         self.gen_userlist(event.arguments[1])
 
     def on_nick(self, c, event):
+        self.cm.do_event(event)
         self.channel.setnick(event.source.nick, event.target)
         print(self.channel)
 
     def on_part(self, c, event):
+        self.cm.do_event(event)
         self.channel.remove(event.source.nick)
 
     def on_quit(self, c, event):
+        self.cm.do_event(event)
         self.channel.remove(event.source.nick)
 
     def on_privmsg(self, c, event):
+        self.cm.do_event(event)
         print(event)
 
     def on_pubmsg(self, c, event):
@@ -81,26 +86,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
             message=event.arguments[0],
             user=self.channel.getuser(event.source.nick)
         )
-        # TEMP stick in a module after events are wired
-        if "http" in msg.message:
-            try:
-                urlexpression = "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
-                possible = re.findall(urlexpression, msg.message)
-                req = get(possible[0], allow_redirects=True, timeout=15)
-                domain = re.findall("https?:\/\/(.+?)\/", req.url)
-                if req.status == 200:
-                    soup = bs4(req.data, "html.parser")
-                    if soup is not None:
-                        try:
-                            title = soup.title.string
-                        except AttributeError as error:
-                            pass
-                        else:
-                            self.sendmsg("[ {} ] - {}".format(title.strip(), domain[0]))
-            except:
-                pass
-
-        elif msg.message.startswith(prefix):
+        if msg.message.startswith(prefix):
             command = Command(prefix=prefix, data=msg)
             # TODO move these
             if command.name == "reload" or command.name == "load":
@@ -122,7 +108,9 @@ class Vicky(irc.bot.SingleServerIRCBot):
                 self.sendmsg(f"Available: {available}")
             else:
                 self.cm.do_command(command)
-        return
+        else:
+            # probably thread this
+            self.cm.do_event(event)
 
     def gen_userlist(self, chan: str) -> NoReturn:
         # maybe better management of users
