@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup as bs4
+
 from lib.cog import Cog
 from lib.command import Command, command
 from lib.web import get

@@ -18,6 +18,7 @@ def command(aliases: list, description: str, role=None, **attrs):
         else:
             f.__restricted__ = False
         return f
+
     return wrap
 
 
@@ -28,9 +29,7 @@ class Command:
         self.message = data.message
         self.name = ""
 
-        parsed = re.search(
-            "{}(\w+)(\\b.*)".format(self.prefix),
-            self.message)
+        parsed = re.search("{}(\w+)(\\b.*)".format(self.prefix), self.message)
         if parsed is not None:
             self.name, self.message = parsed.groups()
             self.message = self.message.lstrip()

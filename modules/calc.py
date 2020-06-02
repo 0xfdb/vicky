@@ -27,6 +27,3 @@ class Calc(Cog):
             self.sendmsg("Your total is: {}".format(subbed))
         else:
             self.sendmsg("I only weached de furst gwade :(")
-
-
-

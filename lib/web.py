@@ -20,6 +20,7 @@ class Web:
     """
     Smol wrapper for requests.Session()
     """
+
     # TODO proxy support
     def __init__(self, headers: Optional[dict] = None, timeout: Optional[int] = None):
         self.session: object = requests.Session()
@@ -28,8 +29,12 @@ class Web:
         self.timeout: int = timeout
 
 
-
-def get(url: str, session: Optional[Web] = None, json: bool = False, **kwargs: Optional[dict]) -> Request:
+def get(
+    url: str,
+    session: Optional[Web] = None,
+    json: bool = False,
+    **kwargs: Optional[dict],
+) -> Request:
     """
     HTTP GET with requests
     returns Request object
@@ -37,7 +42,7 @@ def get(url: str, session: Optional[Web] = None, json: bool = False, **kwargs: O
     if session is not None:
         req = session.session.get(url=url, timeout=session.timeout)
     else:
-       req = requests.get(url=url, **kwargs)
+        req = requests.get(url=url, **kwargs)
 
     status = req.status_code
     if json:

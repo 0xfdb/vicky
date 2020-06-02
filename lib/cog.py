@@ -12,6 +12,7 @@ def event(event: str, **attr):
         f.__irc_event__ = True
         f.__event__ = event
         return f
+
     return wrap
 
 
@@ -23,22 +24,25 @@ class Cog:
         self.log = None
         self.bot_settings = None
         # self.settings = bot.settings.Modules.get(self.__class__.__name__, None)
-        self.events = [getattr(self, name)  # what gets stored.
-                       for name in dir(self)  # loop
-                       if "__" not in name  # ignore builtins
-                       and callable(getattr(self, name))  # is callable
-                       and hasattr(getattr(self, name), "__event__")
-                       ]
+        self.events = [
+            getattr(self, name)  # what gets stored.
+            for name in dir(self)  # loop
+            if "__" not in name  # ignore builtins
+            and callable(getattr(self, name))  # is callable
+            and hasattr(getattr(self, name), "__event__")
+        ]
 
-        self.commands = [getattr(self, name)  # what gets stored.
-                         for name in dir(self)  # loop
-                         if "__" not in name  # ignore builtins
-                         and callable(getattr(self, name))  # is callable
-                         and hasattr(getattr(self, name), "__command__")
-                         ]
+        self.commands = [
+            getattr(self, name)  # what gets stored.
+            for name in dir(self)  # loop
+            if "__" not in name  # ignore builtins
+            and callable(getattr(self, name))  # is callable
+            and hasattr(getattr(self, name), "__command__")
+        ]
 
     def sendmsg(self, msg: str):
         self.bot.connection.privmsg(self.bot.channel.name, msg)
+
 
 @dataclass
 class CogManager:

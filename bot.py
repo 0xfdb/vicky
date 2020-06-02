@@ -18,15 +18,15 @@ logging.basicConfig(level=logging.DEBUG)
 
 class Vicky(irc.bot.SingleServerIRCBot):
     def __init__(self, channel, nickname, server, port=6667, enabled=[]):
-        self.bot = irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname,
-                                            nickname)
+        self.bot = irc.bot.SingleServerIRCBot.__init__(
+            self, [(server, port)], nickname, nickname
+        )
         self.channel = Channel(users=[], name=channel)
         self.cm = CogManager()
 
-
     def run(self):
         # TODO pull default modules from config
-        enabled_modules = ['example', 'imdb', 'chuck', 'calc', 'zerox']
+        enabled_modules = ["example", "imdb", "chuck", "calc", "zerox"]
         self.cm.load_all(enabled_modules, bot=self)
         self.start()
 
@@ -48,12 +48,14 @@ class Vicky(irc.bot.SingleServerIRCBot):
             nick=nick,
             isop=current_channel.is_oper(nick),
             isowner=current_channel.is_owner(nick),
-            isvoiced=current_channel.is_voiced(nick)
+            isvoiced=current_channel.is_voiced(nick),
         )
         self.channel.adduser(newuser)
         print(client.__dict__)
         if event.source.split("!")[0] == client.nickname:
-            self.sendmsg("Vicky Vicky Vicky, can't you see. Sometimes your joins just hypnotize me.")
+            self.sendmsg(
+                "Vicky Vicky Vicky, can't you see. Sometimes your joins just hypnotize me."
+            )
         else:
             return
 
@@ -83,8 +85,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
         # TODO pull prefixes from config
         prefix = ";"
         msg = Message(
-            message=event.arguments[0],
-            user=self.channel.getuser(event.source.nick)
+            message=event.arguments[0], user=self.channel.getuser(event.source.nick)
         )
         if msg.message.startswith(prefix):
             command = Command(prefix=prefix, data=msg)
@@ -122,13 +123,13 @@ class Vicky(irc.bot.SingleServerIRCBot):
                 nick=user,
                 isop=channel.is_oper(user),
                 isowner=channel.is_owner(user),
-                isvoiced=channel.is_voiced(user)
+                isvoiced=channel.is_voiced(user),
             )
             self.channel.adduser(newuser)
 
 
 def main():
-    bot = Vicky('#main', 'vicky', 'localhost', 6667)
+    bot = Vicky("#main", "vicky", "localhost", 6667)
     # bot = Vicky('#bot', 'vicky', 'irc.0xfdb.xyz', 6667)
     bot.run()
 
