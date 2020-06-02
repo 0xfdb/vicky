@@ -18,11 +18,11 @@ class ZeroX(Cog):
 
     def get_tv(self, short=False):
         req = get("https://0xfdb.xyz/nowplaying/test.html")
-        soup = bs4(req.data, 'html.parser')
+        soup = bs4(req.data, "html.parser")
         title = soup.find(id="nowplaying").get_text().strip()
         info, overview = get_imdb(title)
         if info:
-            self.sendmsg(f"Now Playing: {info}")
+            self.sendmsg(info)
             if short:
                 self.sendmsg(overview)
         else:
@@ -30,6 +30,6 @@ class ZeroX(Cog):
 
     def get_music(self):
         req = get("https://taro.0xfdb.xyz/radio.html")
-        soup = bs4(req.data, 'html.parser')
+        soup = bs4(req.data, "html.parser")
         title = soup.find(id="NowPlaying").get_text().strip()
         self.sendmsg("📻 " + title)
