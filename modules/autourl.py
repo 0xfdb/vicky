@@ -3,11 +3,12 @@ import re
 from bs4 import BeautifulSoup as bs4
 
 from lib.cog import Cog, event
+from lib.objects import Events
 from lib.web import get
 
 
 class AutoURL(Cog):
-    @event("pubmsg")
+    @event(Events.PubMsg)
     def run(self, event):
         # TODO refactor!
         msg = " ".join(event.arguments)

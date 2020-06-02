@@ -3,6 +3,15 @@ from dataclasses import dataclass, field
 from typing import List, NoReturn
 
 
+class Events:
+    PubMsg = "pubmsg"
+    PrivMsg = "privmsg"
+    Join = "join"
+    Topic = "topic"
+    Part = "part"
+    Quit = "quit"
+
+
 @dataclass
 class User:
     nick: str
