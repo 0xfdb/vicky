@@ -1,8 +1,10 @@
 #! /usr/bin/env python
 
+import configparser
 import logging
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List, NoReturn
 
 import irc.bot
@@ -10,6 +12,7 @@ import irc.strings
 
 from lib.cog import CogManager
 from lib.command import Command
+from lib.config import Configuration
 from lib.objects import Channel, Message, User
 from lib.web import get
 
@@ -17,16 +20,21 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 class Vicky(irc.bot.SingleServerIRCBot):
-    def __init__(self, channel, nickname, server, port=6667, enabled=[]):
-        self.bot = irc.bot.SingleServerIRCBot.__init__(
-            self, [(server, port)], nickname, nickname
-        )
-        self.channel = Channel(users=[], name=channel)
+    def __init__(self, config):
         self.cm = CogManager()
+        self.config = config
+        self.bot_config = config.Bot
+        self.channel = Channel(users=[], name=self.bot_config.channel)
+        self.bot = irc.bot.SingleServerIRCBot.__init__(
+            self,
+            [(self.bot_config.server, self.bot_config.port)],
+            self.bot_config.nickname,
+            self.bot_config.realname,
+        )
 
     def run(self):
         # TODO pull default modules from config
-        enabled_modules = ["example", "imdb", "chuck", "calc", "zerox"]
+        enabled_modules = self.config.Modules["enabled"]
         self.cm.load_all(enabled_modules, bot=self)
         self.start()
 
@@ -74,11 +82,11 @@ class Vicky(irc.bot.SingleServerIRCBot):
 
     def on_pubmsg(self, c, event):
         # TODO pull prefixes from config
-        prefix = ";"
         msg = Message(
             message=event.arguments[0], user=self.channel.getuser(event.source.nick)
         )
-        if msg.message.startswith(prefix):
+        if msg.message[0] in self.bot_config.prefixes:
+            prefix = msg.message[0]
             command = Command(prefix=prefix, data=msg)
             # TODO move these
             if command.name == "reload" or command.name == "load":
@@ -119,9 +127,26 @@ class Vicky(irc.bot.SingleServerIRCBot):
             self.channel.adduser(newuser)
 
 
+def load_config():
+    try:
+        return Configuration("config.toml")
+    except FileNotFoundError:
+        from lib.config import generate_config, write_config
+
+        generated = generate_config()
+        towrite = write_config(generated, "config.toml")
+        if towrite:
+            return Configuration("config.toml")
+        else:
+            import sys
+
+            sys.exit("Couldn't load the configuration")
+
+
 def main():
-    bot = Vicky("#main", "vicky", "localhost", 6667)
-    # bot = Vicky('#bot', 'vicky', 'irc.0xfdb.xyz', 6667)
+    config = load_config()
+    print(config)
+    bot = Vicky(config)
     bot.run()
 
 

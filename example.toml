@@ -1,0 +1,23 @@
+[Bot]
+server = ""
+port = 0
+nickname = ""
+realname = ""
+channel = ""
+prefixes = []
+
+[Modules]
+enabled = []
+
+[Modules.Autourl]
+
+[Modules.Calc]
+
+[Modules.Chuck]
+
+[Modules.Example]
+
+[Modules.Imdb]
+api_key = ""
+
+[Modules.Zerox]
