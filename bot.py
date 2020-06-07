@@ -3,6 +3,7 @@
 import configparser
 import logging
 import re
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, NoReturn
@@ -107,10 +108,12 @@ class Vicky(irc.bot.SingleServerIRCBot):
                 self.sendmsg(f"Loaded: {loaded}")
                 self.sendmsg(f"Available: {available}")
             else:
-                self.cm.do_command(command)
+                # TEMP gross
+                threading.Thread(target=self.cm.do_command, args=[command]).start()
+
         else:
-            # probably thread this
-            self.cm.do_event(event)
+            # TEMP gross
+            threading.Thread(target=self.cm.do_event, args=[event]).start()
 
     def gen_userlist(self, chan: str) -> NoReturn:
         # maybe better management of users
