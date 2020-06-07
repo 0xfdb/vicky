@@ -23,7 +23,7 @@ class Cog:
         self.__cog__ = True
         self.log = None
         self.bot_settings = bot.bot_config
-        self.settings = bot.config.Modules.get(self.__class__.__name__.lower(), None)
+        self.settings = bot.config.Modules.get(self.__class__.__name__, None)
         self.events = [
             getattr(self, name)  # what gets stored.
             for name in dir(self)  # loop

@@ -2,9 +2,8 @@ from lib.cog import Cog
 from lib.command import Command, command
 from lib.web import Web, get
 
-# TODO move to config.toml when implemented
 
-class IMdb(Cog):
+class Imdb(Cog):
     def __init__(self, bot):
         super().__init__(bot)
         self.api_key = self.settings["api_key"]
@@ -12,9 +11,8 @@ class IMdb(Cog):
     @command(aliases=["imdb", "movie"], description="")
     def movie(self, c: Command):
         print("RAN")
-        # This should be handled better
         if len(self.api_key) == 0:
-            self.sendmsg("Missing API key in config.toml -> Modules.imdb.api_key")
+            self.sendmsg("Missing API key in config.toml -> Modules.Imdb api_key")
         else:
             response, overview = get_imdb(c.message, self.api_key)
             if response is not None:
