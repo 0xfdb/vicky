@@ -9,7 +9,8 @@ prefixes = []
 [Modules]
 enabled = []
 
-[Modules.Autourl]
+[Modules.AutoURL]
+ignore = ["youtube.com", "youtu.be"]
 
 [Modules.Calc]
 
@@ -18,6 +19,9 @@ enabled = []
 [Modules.Example]
 
 [Modules.Imdb]
+api_key = ""
+
+[Modules.Youtube]
 api_key = ""
 
 [Modules.Zerox]

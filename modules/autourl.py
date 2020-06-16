@@ -13,6 +13,9 @@ class AutoURL(Cog):
     def run(self, event: Event):
         msg = event.arguments[0]
         if "http" in msg:
+            for ignore in self.settings["ignore"]:
+                if ignore in msg:
+                    return None
             if title := self.autourl(msg):
                 self.sendmsg(title)
 
