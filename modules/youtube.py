@@ -36,5 +36,5 @@ class Youtube(Cog):
         # videoid = ytjson.data["items"][0]["id"]["videoId"]
         title = ytjson.data["items"][0]["snippet"]["title"]
         channel = ytjson.data["items"][0]["snippet"]["channelTitle"]
-        duration = ytjson.data["items"][0]["snippet"]["duration"]
+        duration = ytjson.data["items"][0]["contentDetails"]["duration"]
         return {"title": title, "channel": channel, "duration": duration}
