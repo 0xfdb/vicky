@@ -16,17 +16,25 @@ class Youtube(Cog):
             ytid = re.search("(?:v=|\.be\/)(.{11})", event.arguments[0])[1]
             info = self.lookup(ytid)
             if len(info) != 0:
-                self.sendmsg("[ {} - {} ] - youtu.be".format(info["title"], info["channel"]))
+                self.sendmsg(
+                    "[ {} — {} ({}) ] - youtu.be".format(
+                        info["title"], info["channel"], info["duration"]
+                    )
+                )
 
     def lookup(self, videoid: str) -> dict:
-        searchurl = "https://www.googleapis.com/youtube/v3/search?"\
-            "part=snippet&type=video&q={query}&maxResults=1&"\
-            "videoSyndicated=true&key={key}"
-        url = searchurl.format(query=videoid, key=self.settings["api_key"])
+        searchurl = (
+            "https://www.googleapis.com/youtube/v3/videos?"
+            "part=contentDetails,snippet&id={vid}&fields="
+            "items(contentDetails%2Fduration%2Csnippet(channelTitle%2Ctitle))"
+            "&key={key}"
+        )
+        url = searchurl.format(vid=videoid, key=self.settings["api_key"])
         ytjson = get(url, json=True)
         if ytjson.data.get("error", False):
             return {}
         # videoid = ytjson.data["items"][0]["id"]["videoId"]
         title = ytjson.data["items"][0]["snippet"]["title"]
         channel = ytjson.data["items"][0]["snippet"]["channelTitle"]
-        return {"title": title, "channel": channel}
+        duration = ytjson.data["items"][0]["snippet"]["duration"]
+        return {"title": title, "channel": channel, "duration": duration}
