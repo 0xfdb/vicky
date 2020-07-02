@@ -18,6 +18,9 @@ ignore = ["youtube.com", "youtu.be"]
 
 [Modules.Example]
 
+[Modules.Food]
+api_key = ""
+
 [Modules.Imdb]
 api_key = ""
 
