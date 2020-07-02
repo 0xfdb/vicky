@@ -20,12 +20,12 @@ class Food(Cog):
         request = get(url, json=True)
         if request.status_code == 200:
             try:
-                total = len(request)
+                total = len(request.data)
                 num = random.randint(0, total)
                 msg = "({}/{}) {} {}".format(
                     num, total,
-                    request[num]["title"],
-                    request[num]["source_url"])
+                    request.data[num]["title"],
+                    request.data[num]["source_url"])
             except (IndexError, KeyError) as error:
                 msg = error
             return msg
