@@ -6,29 +6,26 @@ from lib.web import Web, get
 
 
 class Food(Cog):
-    def __init__(self, bot):
-        super().__init__(bot)
-        self.api_key = self.settings["api_key"]
 
     @command(aliases=["food", "recipe"], description="")
     def food(self, c: Command):
-        if len(self.api_key) == 0:
-            self.sendmsg("Missing API key Modules.Food.api_key")
-        else:
+        if len(c.message) >= 4:
             response = self.get_food2fork(c.message)
             self.sendmsg(response)
+        else:
+            self.sendmsg("Query is too short!")
 
     def get_food2fork(self, search: str) -> str:
-        url = "https://food2fork.com/api/search?key={}&q={}".format(self.api_key ,search)
+        url = "https://forkify-api.herokuapp.com/api/search?q=" + search
         request = get(url, json=True)
         if request.status_code == 200:
             try:
-                total = len(request["recipes"])
+                total = len(request)
                 num = random.randint(0, total)
-                msg = "{} {} ({}/{})".format(
-                    request["recipes"][num]["title"],
-                    request["recipes"][num]["f2f_url"],
-                    num, total)
+                msg = "({}/{}) {} {}".format(
+                    num, total,
+                    request[num]["title"],
+                    request[num]["source_url"])
             except (IndexError, KeyError) as error:
                 msg = error
             return msg
