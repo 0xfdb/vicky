@@ -1,10 +1,10 @@
 import re
 
-from lib.objects import Message  # , Role
+from lib.objects import Message, User  # , Role
 
 
 # TODO roles
-def command(aliases: list, description: str, role=None, **attrs):
+def command(aliases: list, description: str = None, role=None, **attrs):
     def wrap(f):
         f.__command__ = True
         f.__command_name__ = aliases
@@ -24,10 +24,10 @@ def command(aliases: list, description: str, role=None, **attrs):
 
 class Command:
     def __init__(self, prefix: str, data: Message):
-        self.prefix = prefix
-        self.data = data
-        self.message = data.message
-        self.name = ""
+        self.prefix: str = prefix
+        self.message: Message = data.message
+        self.user: User = data.user
+        self.name: str = ""
 
         parsed = re.search("{}(\w+)(\\b.*)".format(self.prefix), self.message)
         if parsed is not None:
