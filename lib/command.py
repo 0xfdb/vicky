@@ -25,8 +25,9 @@ def command(aliases: list, description: str = None, role=None, **attrs):
 class Command:
     def __init__(self, prefix: str, data: Message):
         self.prefix: str = prefix
-        self.message: Message = data.message
+        self.message: str = data.message
         self.user: User = data.user
+        self.ts: float = data.ts
         self.name: str = ""
 
         parsed = re.search("{}(\w+)(\\b.*)".format(self.prefix), self.message)

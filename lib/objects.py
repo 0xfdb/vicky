@@ -24,7 +24,7 @@ class User:
 class Message:
     message: str
     user: User
-    ts: int = time.time()
+    ts: float = time.time()
 
 
 @dataclass
