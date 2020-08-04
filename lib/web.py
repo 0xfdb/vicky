@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Any, Optional
 
 import requests
-import ujson
 
 
 # TODO consider better handling of this
@@ -22,11 +21,11 @@ class Web:
     """
 
     # TODO proxy support
-    def __init__(self, headers: Optional[dict] = None, timeout: Optional[int] = None):
-        self.session: object = requests.Session()
+    def __init__(self, headers: Optional[dict] = None, timeout: Optional[int] = 5):
+        self.client = httpx.Client()
         if headers:
-            self.session.headers.update(headers)
-        self.timeout: int = timeout
+            self.client.headers.update(headers)
+        self.timeout = timeout
 
 
 def get(
@@ -40,15 +39,15 @@ def get(
     returns Request object
     """
     if session is not None:
-        req = session.session.get(url=url, timeout=session.timeout)
+        req = session.client.get(url=url, timeout=session.timeout)
     else:
-        req = requests.get(url=url, **kwargs)
+        req = httpx.get(url=url, **kwargs)
 
     status = req.status_code
     if json:
-        return Request(status, req.url, todict(req.text))
+        return Request(status, str(req.url), req.json())
     else:
-        return Request(status, req.url, req.text)
+        return Request(status, str(req.url), req.text)
 
 
 def post(url: str, data: dict, session: Optional[Web] = None) -> Request:
@@ -57,15 +56,8 @@ def post(url: str, data: dict, session: Optional[Web] = None) -> Request:
     returns Request object
     """
     if session is not None:
-        session.session.post(url=url, data=data, timeout=session.timeout)
+        session.client.post(url=url, data=data, timeout=session.timeout)
     else:
-        req = requests.post(url=url, data=data)
-    return Request(req.status_code, req.text)
+        req = httpx.post(url=url, data=data)
+    return Request(req.status_code, url, req.text)
 
-
-# maybe move this to utils or something
-def todict(text: str) -> Any:
-    if _j := ujson.loads(text):
-        return _j
-    else:
-        return None
