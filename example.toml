@@ -24,6 +24,8 @@ api_key = ""
 [Modules.Imdb]
 api_key = ""
 
+[Modules.Kanye]
+
 [Modules.Youtube]
 api_key = ""
 
