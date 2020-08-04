@@ -86,7 +86,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
         msg = Message(
             message=event.arguments[0], user=self.channel.getuser(event.source.nick)
         )
-        if msg.message[0] in self.bot_config["prefixes"}:
+        if msg.message[0] in self.bot_config["prefixes"]:
             prefix = msg.message[0]
             command = Command(prefix=prefix, data=msg)
             # TODO move these

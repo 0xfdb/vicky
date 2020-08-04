@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Optional
 
-import requests
+import httpx
 
 
 # TODO consider better handling of this
@@ -60,4 +60,3 @@ def post(url: str, data: dict, session: Optional[Web] = None) -> Request:
     else:
         req = httpx.post(url=url, data=data)
     return Request(req.status_code, url, req.text)
-
