@@ -51,4 +51,4 @@ def post(url: str, data: dict, session: Optional[Web] = None) -> Response:
         session.client.post(url=url, data=data, timeout=session.timeout)
     else:
         response = httpx.post(url=url, data=data)
-    return Response(response, response.text)
+    return Response(resobj=response, data=response.text)
