@@ -12,6 +12,9 @@ enabled = []
 [Modules.AutoURL]
 ignore = ["youtube.com", "youtu.be"]
 
+[Modules.Bofh]
+excuse_path = "files/bofh_excuses.txt"
+
 [Modules.Calc]
 
 [Modules.Chuck]
