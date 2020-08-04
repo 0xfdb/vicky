@@ -2,10 +2,9 @@
 from dataclasses import make_dataclass
 from pathlib import Path
 
+import qtoml
+
 from lib.util import prompt
-from tomlkit import dumps as tomldump
-from tomlkit import items as tomltypes
-from tomlkit import loads as tomlload
 
 
 class Configuration:
@@ -13,16 +12,13 @@ class Configuration:
         self.path = Path(path)
         if self.path.exists():
             self.full = self.load()
-            self.Bot = make_dataclass(
-                "Bot_Configuration",
-                [(k, type(v), v) for k, v in self.full["Bot"].items()],
-            )
+            self.Bot = self.full["Bot"]
             self.Modules = self.full["Modules"]
         else:
             raise FileNotFoundError(path)
 
     def load(self) -> dict:
-        config = tomlload(self.path.read_text())
+        config = qtoml.loads(self.path.read_text())
         return config
 
 
@@ -37,12 +33,13 @@ def getmodules() -> list:
 
 
 def generate_config():
-    config = tomlload(Path("example.toml").read_text())
+    # TODO ensure this works still
+    config = qtoml.loads(Path("example.toml").read_text())
     botsettings = config["Bot"]
     for each in botsettings.keys():
-        if type(botsettings[each]) == bool:
+        if type(botsettings[each]) is bool:
             botsettings[each] = prompt(f"Would you like to enable {each}? y/N ")
-        elif type(botsettings[each]) == tomltypes.Integer:
+        elif type(botsettings[each]) is int:
             numerical_option = input(f"Please enter a number for {each}: ")
             assert numerical_option.isdigit() is True, "Must be a number!"
             botsettings[each] = int(numerical_option)
@@ -56,7 +53,7 @@ def generate_config():
     for module_index in to_enable.split(","):
         if module_index.isdigit() and int(module_index) <= len(modules):
             config["Modules"]["enabled"].append(modules[int(module_index)])
-    return tomldump(config)
+    return qtoml.dumps(config)
 
 
 def write_config(config: str, path: str) -> bool:
@@ -65,6 +62,6 @@ def write_config(config: str, path: str) -> bool:
         return False
     else:
         path = Path.cwd() / path
-        with open(path, "w") as toml:
-            toml.write(config)
+        with open(path, "w") as tomlfile:
+            qtoml.dump(config, tomlfile)
         return True

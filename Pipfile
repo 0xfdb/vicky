@@ -11,7 +11,7 @@ ujson = "*"
 requests = "*"
 bs4 = "*"
 certifi = "*"
-tomlkit = "*"
+qtoml = "*"
 
 [requires]
 python_version = "3.8"

@@ -25,12 +25,12 @@ class Vicky(irc.bot.SingleServerIRCBot):
         self.cm = CogManager()
         self.config = config
         self.bot_config = config.Bot
-        self.channel = Channel(users=[], name=self.bot_config.channel)
+        self.channel = Channel(users=[], name=self.bot_config["channel"])
         self.bot = irc.bot.SingleServerIRCBot.__init__(
             self,
-            [(self.bot_config.server, self.bot_config.port)],
-            self.bot_config.nickname,
-            self.bot_config.realname,
+            [(self.bot_config["server"], self.bot_config["port"])],
+            self.bot_config["nickname"],
+            self.bot_config["realname"],
         )
 
     def run(self):
@@ -86,7 +86,7 @@ class Vicky(irc.bot.SingleServerIRCBot):
         msg = Message(
             message=event.arguments[0], user=self.channel.getuser(event.source.nick)
         )
-        if msg.message[0] in self.bot_config.prefixes:
+        if msg.message[0] in self.bot_config["prefixes"}:
             prefix = msg.message[0]
             command = Command(prefix=prefix, data=msg)
             # TODO move these
