@@ -4,6 +4,7 @@ from typing import List, NoReturn
 
 
 class Events:
+    Nick = "nick"
     PubMsg = "pubmsg"
     PrivMsg = "privmsg"
     Join = "join"
