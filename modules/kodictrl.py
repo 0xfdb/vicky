@@ -15,9 +15,9 @@ class kodictrl(Cog):
 	@command(aliases=['kodictrl'], description='abc')
 	def ctrl_kodi(self, c: Command):
 		kodi_msg = c.message.split(" ")											#commands
-		nick = c.data.user.nick
-		isop = c.data.user.isop
-		isowner = c.data.user.isowner
+		nick = c.user.nick
+		isop = c.user.isop
+		isowner = c.user.isowner
 		nick_allowed = False
 		if isop == True or isowner == True:
 			nick_allowed = True
