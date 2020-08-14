@@ -29,6 +29,8 @@ api_key = ""
 
 [Modules.Kanye]
 
+[Modules.Substitute]
+
 [Modules.Youtube]
 api_key = ""
 
